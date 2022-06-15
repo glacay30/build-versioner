@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BuildVersioner
 {
-    internal class BVFolderAndFileNames
+    internal sealed class BVFolderAndFileNames
     {
         public static string BVTempDirectory => "Assets/BVTemp";
         public static string BVTempResourcesDirectory => BVTempDirectory + "/" + "Resources";

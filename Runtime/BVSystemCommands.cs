@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BuildVersioner
 {
-    internal class BVSystemCommands
+    internal sealed class BVSystemCommands
     {
 #if UNITY_EDITOR
         internal static bool Editor_SetP4Username(string username)

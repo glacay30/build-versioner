@@ -54,6 +54,5 @@ namespace BuildVersioner
             return Instance._changelistNumber;
 #endif
         }
-
     }
 }
