@@ -25,7 +25,7 @@ namespace BuildVersioner
 #if UNITY_EDITOR
         public string P4Workspace { get; set; }
 #elif UNITY_STANDALONE
-    private string _changelistNumber;
+        private string _changelistNumber;
 #endif
 
         public static string GetFullVersionFormatted()
@@ -50,7 +50,7 @@ namespace BuildVersioner
 #if UNITY_EDITOR
             return Editor_GetChangelistNumberFromCommand();
 #elif UNITY_STANDALONE
-        return Instance._changelistNumber;
+            return Instance._changelistNumber;
 #endif
         }
 
@@ -61,25 +61,25 @@ namespace BuildVersioner
             VersionMinor = Editor_ReadPropertyFromFile(nameof(VersionMinor));
             P4Workspace = Editor_ReadPropertyFromFile(nameof(P4Workspace));
 #elif UNITY_STANDALONE
-        var allSettingSOs = Resources.LoadAll<BVBuildVersionScriptableObject>
-        (
-            nameof(BVBuildVersionScriptableObject)
-        );
+            var allSettingSOs = Resources.LoadAll<BVBuildVersionScriptableObject>
+            (
+                nameof(BVBuildVersionScriptableObject)
+            );
 
-        if (allSettingSOs.Length > 0)
-        {
-            var settings = allSettingSOs.First();
-            string fullVersion = settings.Value;
-            string[] splitVersion = fullVersion.Split('.');
-            VersionMajor = splitVersion[0];
-            VersionMinor = splitVersion[1];
-            _changelistNumber = splitVersion[2];
-        }
+            if (allSettingSOs.Length > 0)
+            {
+                var settings = allSettingSOs.First();
+                string fullVersion = settings.Value;
+                string[] splitVersion = fullVersion.Split('.');
+                VersionMajor = splitVersion[0];
+                VersionMinor = splitVersion[1];
+                _changelistNumber = splitVersion[2];
+            }
 #endif
         }
 
 #if UNITY_EDITOR
-        public static bool Editor_SetP4Username(string username)
+        internal static bool Editor_SetP4Username(string username)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -106,7 +106,7 @@ namespace BuildVersioner
             return true;
         }
 
-        public static void Editor_SaveToFile()
+        internal static void Editor_SaveToFile()
         {
             using var file = File.CreateText(Editor_GetFilePath());
             foreach (var prop in typeof(BVBuildVersion).GetProperties(BindingFlags.Public | BindingFlags.Instance))
@@ -123,7 +123,7 @@ namespace BuildVersioner
             return filepath;
         }
 
-        public static string Editor_GetChangelistNumberFromCommand()
+        private static string Editor_GetChangelistNumberFromCommand()
         {
             string currentPerforceWorkspace = Instance.P4Workspace;
             if (string.IsNullOrEmpty(currentPerforceWorkspace))
@@ -200,8 +200,8 @@ namespace BuildVersioner
                 FileName = "cmd.exe",
                 Arguments = "/C " + command,
 #elif UNITY_EDITOR_OSX
-            FileName = "/bin/bash",
-            Arguments = "-c \"" + command + "\"",
+                FileName = "/bin/bash",
+                Arguments = "-c \"" + command + "\"",
 #endif
                 WindowStyle = ProcessWindowStyle.Hidden,
                 CreateNoWindow = true,

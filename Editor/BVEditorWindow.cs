@@ -5,7 +5,7 @@ using Unity.EditorCoroutines.Editor;
 
 namespace BuildVersioner
 {
-    public class BVEditorWindow : EditorWindow
+    internal class BVEditorWindow : EditorWindow
     {
         private string _changelistButtonOutput;
         private string _usernameSet;
