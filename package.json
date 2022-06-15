@@ -1,12 +1,14 @@
 {
-    "name": "com.lacayo.build-versioner",
-    "version": "0.0.1",
-    "displayName": "Build Versioner",
-    "description": "A build versioner that uses perforce to stamp the latest commit along with major/minor version.",
-    "author":
-    {
-      "name": "Gabriel Lacayo",
-      "email": "gabriel@lacayo.dev",
-      "url": "https://lacayo.dev"
-    }
+  "name": "com.lacayo.build-versioner",
+  "version": "0.1.0",
+  "displayName": "Build Versioner",
+  "description": "A build versioner that uses perforce to stamp the latest commit along with major/minor version.",
+  "author": {
+    "name": "Gabriel Lacayo",
+    "email": "gabriel@lacayo.dev",
+    "url": "https://lacayo.dev"
+  },
+  "dependencies": {
+    "com.unity.editorcoroutines": "1.0.0"
   }
+}

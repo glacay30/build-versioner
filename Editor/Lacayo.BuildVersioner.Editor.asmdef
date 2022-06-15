@@ -2,7 +2,8 @@
     "name": "Lacayo.BuildVersioner.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:22e851f02f6f85144abf3e26ea668add"
+        "GUID:22e851f02f6f85144abf3e26ea668add",
+        "Unity.EditorCoroutines.Editor"
     ],
     "includePlatforms": [
         "Editor"
