@@ -5,30 +5,23 @@ using UnityEditor.Build.Reporting;
 
 namespace BuildVersioner
 {
-    internal class BVPostproccessBuild : IPostprocessBuildWithReport
+    internal sealed class BVPostproccessBuild : IPostprocessBuildWithReport
     {
         public int callbackOrder => 0;
 
         public void OnPostprocessBuild(BuildReport report)
         {
-            Debug.Log("BV POST Process Build...");
-            if (AssetDatabase.IsValidFolder("Assets/Temp"))
+            if (AssetDatabase.IsValidFolder(BVFolderAndFileNames.BVTempDirectory))
             {
-                Debug.Log("Found: " + "Assets/Temp");
-                if (!AssetDatabase.DeleteAsset("Assets/Temp"))
+                if (!AssetDatabase.DeleteAsset(BVFolderAndFileNames.BVTempDirectory))
                 {
-                    Debug.LogError("Could not delete: " + "Assets/Temp");
-                }
-                else
-                {
-                    Debug.Log("Deleted: " + "Assets/Temp");
+                    Debug.LogError("Could not delete: " + BVFolderAndFileNames.BVTempDirectory);
                 }
             }
             else
             {
-                Debug.LogError("Could not find: " + "Assets/Temp");
+                Debug.LogError("Could not find: " + "Assets/BVTemp");
             }
-            Debug.Log("Done! BV POST Process Build");
         }
     }
 }

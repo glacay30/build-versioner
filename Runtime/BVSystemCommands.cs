@@ -6,78 +6,8 @@ using UnityEngine;
 
 namespace BuildVersioner
 {
-    public class BVBuildVersion
+    internal class BVSystemCommands
     {
-        private static BVBuildVersion _instance;
-        public static BVBuildVersion Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new BVBuildVersion();
-                return _instance;
-            }
-        }
-
-        public string VersionMajor { get; set; }
-        public string VersionMinor { get; set; }
-
-#if UNITY_EDITOR
-        public string P4Workspace { get; set; }
-#elif UNITY_STANDALONE
-        private string _changelistNumber;
-#endif
-
-        public static string GetFullVersionFormatted()
-        {
-            string major = Instance.VersionMajor;
-            if (string.IsNullOrEmpty(major))
-                major = "#";
-
-            string minor = Instance.VersionMinor;
-            if (string.IsNullOrEmpty(minor))
-                minor = "#";
-
-            string changelist = GetChangelistNumber();
-            if (string.IsNullOrEmpty(changelist))
-                changelist = "######";
-
-            return major + "." + minor + "." + changelist;
-        }
-
-        public static string GetChangelistNumber()
-        {
-#if UNITY_EDITOR
-            return Editor_GetChangelistNumberFromCommand();
-#elif UNITY_STANDALONE
-            return Instance._changelistNumber;
-#endif
-        }
-
-        private BVBuildVersion()
-        {
-#if UNITY_EDITOR
-            VersionMajor = Editor_ReadPropertyFromFile(nameof(VersionMajor));
-            VersionMinor = Editor_ReadPropertyFromFile(nameof(VersionMinor));
-            P4Workspace = Editor_ReadPropertyFromFile(nameof(P4Workspace));
-#elif UNITY_STANDALONE
-            var allSettingSOs = Resources.LoadAll<BVBuildVersionScriptableObject>
-            (
-                nameof(BVBuildVersionScriptableObject)
-            );
-
-            if (allSettingSOs.Length > 0)
-            {
-                var settings = allSettingSOs.First();
-                string fullVersion = settings.Value;
-                string[] splitVersion = fullVersion.Split('.');
-                VersionMajor = splitVersion[0];
-                VersionMinor = splitVersion[1];
-                _changelistNumber = splitVersion[2];
-            }
-#endif
-        }
-
 #if UNITY_EDITOR
         internal static bool Editor_SetP4Username(string username)
         {
@@ -106,26 +36,55 @@ namespace BuildVersioner
             return true;
         }
 
+        internal static string Editor_GetP4Username()
+        {
+            string command = Editor_GetP4Path() + " set P4USER";
+            using Process cmd = Editor_OpenTerminalWithCommand(command);
+            string stdErr = cmd.StandardError.ReadToEnd();
+            string stdOut = cmd.StandardOutput.ReadToEnd();
+
+            if (!string.IsNullOrEmpty(stdErr))
+            {
+                UnityEngine.Debug.LogError("Detected error: " + stdErr);
+                return "";
+            }
+
+            if (string.IsNullOrEmpty(stdOut))
+            {
+                return "(None set)";
+            }
+
+            // should expect on windows something like:
+            // P4USER=username (set)
+            // and we want to extract 'username'
+
+            int start = stdOut.IndexOf('=') + 1;
+            int end = stdOut.IndexOf(' ');
+            int length = end - start;
+            string username = stdOut.Substring(start, length);
+            return username;
+        }
+
         internal static void Editor_SaveToFile()
         {
             using var file = File.CreateText(Editor_GetFilePath());
-            foreach (var prop in typeof(BVBuildVersion).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            foreach (var prop in typeof(BVSingleton).GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                file.WriteLine(prop.Name + ": " + prop.GetValue(Instance));
+                file.WriteLine(prop.Name + ": " + prop.GetValue(BVSingleton.Instance));
             }
         }
 
-        private static string Editor_GetFilePath()
+        internal static string Editor_GetFilePath()
         {
             string userSettingsPath = Path.Combine(Application.dataPath, "../UserSettings");
             string fileName = "BVBuildVersion.asset";
-            string filepath = Path.Combine(userSettingsPath, fileName);
-            return filepath;
+            string filePath = Path.Combine(userSettingsPath, fileName);
+            return filePath;
         }
 
-        private static string Editor_GetChangelistNumberFromCommand()
+        internal static string Editor_GetChangelistNumberFromCommand()
         {
-            string currentPerforceWorkspace = Instance.P4Workspace;
+            string currentPerforceWorkspace = BVSingleton.Instance.P4Workspace;
             if (string.IsNullOrEmpty(currentPerforceWorkspace))
             {
                 UnityEngine.Debug.LogError("No workspace set! Set one at Window > Build Versioner > Workspace");
@@ -141,7 +100,7 @@ namespace BuildVersioner
             {
                 if (stdErr.Contains("has not been enabled by 'p4 protect'."))
                 {
-                    UnityEngine.Debug.LogError(stdErr + " (This usually means the username set is invalid—make sure to check for typos when setting your p4 username.)");
+                    UnityEngine.Debug.LogError(stdErr + " (This usually your username is mistyped or not set—check in Window > Build Versioner > Get Username.)");
                 }
                 else
                 {
@@ -167,7 +126,7 @@ namespace BuildVersioner
             return number;
         }
 
-        private static string Editor_ReadPropertyFromFile(string propertyName)
+        internal static string Editor_ReadPropertyFromFile(string propertyName)
         {
             if (File.Exists(Editor_GetFilePath()))
             {
@@ -192,7 +151,7 @@ namespace BuildVersioner
             return default;
         }
 
-        private static Process Editor_OpenTerminalWithCommand(string command)
+        internal static Process Editor_OpenTerminalWithCommand(string command)
         {
             var startInfo = new ProcessStartInfo
             {
@@ -212,7 +171,7 @@ namespace BuildVersioner
             return Process.Start(startInfo);
         }
 
-        private static string Editor_GetP4Path()
+        internal static string Editor_GetP4Path()
         {
 #if UNITY_EDITOR_WIN
             return "p4";
