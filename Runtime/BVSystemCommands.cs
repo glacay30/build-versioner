@@ -38,7 +38,7 @@ namespace BuildVersioner
 
         internal static string Editor_GetP4Username()
         {
-            string command = Editor_GetP4Path() + " set P4USER";
+            string command = Editor_GetP4Path() + " set -q P4USER";
             using Process cmd = Editor_OpenTerminalWithCommand(command);
             string stdErr = cmd.StandardError.ReadToEnd();
             string stdOut = cmd.StandardOutput.ReadToEnd();
@@ -54,14 +54,13 @@ namespace BuildVersioner
                 return "(None set)";
             }
 
-            // should expect on windows something like:
-            // P4USER=username (set)
+            // should expect something like:
+            // P4USER=username
             // and we want to extract 'username'
 
+            stdOut = stdOut.Trim();
             int start = stdOut.IndexOf('=') + 1;
-            int end = stdOut.IndexOf(' ');
-            int length = end - start;
-            string username = stdOut.Substring(start, length);
+            string username = stdOut.Substring(start);
             return username;
         }
 
