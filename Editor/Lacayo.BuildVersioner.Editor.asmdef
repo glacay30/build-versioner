@@ -1,0 +1,18 @@
+{
+    "name": "Lacayo.BuildVersioner.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:22e851f02f6f85144abf3e26ea668add"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
