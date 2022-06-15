@@ -100,7 +100,11 @@ namespace BuildVersioner
             {
                 if (stdErr.Contains("has not been enabled by 'p4 protect'."))
                 {
-                    UnityEngine.Debug.LogError(stdErr + " (This usually your username is mistyped or not set—check in Window > Build Versioner > Get Username.)");
+                    UnityEngine.Debug.LogError(stdErr + " (This usually means your username is mistyped or not set—check in Window > Build Versioner > Get Username.)");
+                }
+                else if (stdErr.Contains("Invalid changelist"))
+                {
+                    UnityEngine.Debug.LogError(stdErr + " (This usually means your workspace is misspelled—check in Window > Build Versioner > Workspace.)");
                 }
                 else
                 {

@@ -6,9 +6,9 @@ namespace BuildVersioner
 {
     internal class BVFolderAndFileNames
     {
-        public static string BVTempDirectory => "Assets/BVTemp/";
-        public static string BVTempResourcesDirectory => BVTempDirectory + "Resources/";
-        public static string BVTempAssetPath => BVTempResourcesDirectory + nameof(BVInfoScriptableObject) + ".asset";
+        public static string BVTempDirectory => "Assets/BVTemp";
+        public static string BVTempResourcesDirectory => BVTempDirectory + "/" + "Resources";
+        public static string BVTempAssetPath => BVTempResourcesDirectory + "/" + nameof(BVInfoScriptableObject) + ".asset";
 
         /// <summary>
         /// Create subdirectories given a path, assuming the first dir is Assets
@@ -21,7 +21,7 @@ namespace BuildVersioner
         {
             List<string> dirs = new List<string>(path.Split(new char[] { '/' }));
 
-            if (dirs[0] == "Assets")
+            if (dirs[0] != "Assets")
             {
                 Debug.LogError("First dir needs to be Assets! Given path was: " + path);
                 return false;
@@ -46,12 +46,8 @@ namespace BuildVersioner
                         Debug.LogError("Unable to create: " + newPath);
                         return false;
                     }
-                    else
-                    {
-                        Debug.Log("Created: " + newPath);
-                        currentPath = newPath;
-                    }
                 }
+                currentPath = newPath;
             }
             return true;
         }

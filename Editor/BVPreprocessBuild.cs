@@ -15,7 +15,6 @@ namespace BuildVersioner
             {
                 var settings = ScriptableObject.CreateInstance<BVInfoScriptableObject>();
                 AssetDatabase.CreateAsset(settings, BVFolderAndFileNames.BVTempAssetPath);
-                Debug.Log("Created: " + BVFolderAndFileNames.BVTempAssetPath);
                 AssetDatabase.SaveAssets(); // save newly created asset
 
                 var infoAssets = Resources.LoadAll<BVInfoScriptableObject>(nameof(BVInfoScriptableObject));

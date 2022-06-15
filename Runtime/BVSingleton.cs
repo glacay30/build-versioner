@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace BuildVersioner
 {
     internal sealed class BVSingleton
@@ -31,15 +33,10 @@ namespace BuildVersioner
             VersionMinor = BVSystemCommands.Editor_ReadPropertyFromFile(nameof(VersionMinor));
             P4Workspace = BVSystemCommands.Editor_ReadPropertyFromFile(nameof(P4Workspace));
 #elif UNITY_STANDALONE
-            var allSettingSOs = Resources.LoadAll<BVBuildVersionScriptableObject>
-            (
-                nameof(BVBuildVersionScriptableObject)
-            );
-
-            if (allSettingSOs.Length > 0)
+            var infoAssets = Resources.LoadAll<BVInfoScriptableObject>(nameof(BVInfoScriptableObject));
+            if (infoAssets.Length == 1)
             {
-                var settings = allSettingSOs.First();
-                string fullVersion = settings.Value;
+                string fullVersion = infoAssets[0].Value;
                 string[] splitVersion = fullVersion.Split('.');
                 VersionMajor = splitVersion[0];
                 VersionMinor = splitVersion[1];
