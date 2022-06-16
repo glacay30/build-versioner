@@ -1,3 +1,7 @@
+// Copyright (c) 2022 Gabriel Lacayo
+// See https://mit-license.org/
+// Contact: lacayo@alumni.usc.edu
+
 using System.Collections;
 using UnityEngine;
 using UnityEditor;
