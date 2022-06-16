@@ -8,6 +8,9 @@ namespace BuildVersioner
     /// </summary>
     internal sealed class BVInfoScriptableObject : ScriptableObject
     {
-        public string Value;
+        public bool Enabled;
+        public string VersionMajor;
+        public string VersionMinor;
+        public string Changelist;
     }
 }

@@ -64,7 +64,7 @@ namespace BuildVersioner
             return username;
         }
 
-        internal static void Editor_SaveToFile()
+        internal static void Editor_SavePropertiesToFile()
         {
             using var file = File.CreateText(Editor_GetFilePath());
             foreach (var prop in typeof(BVSingleton).GetProperties(BindingFlags.Public | BindingFlags.Instance))

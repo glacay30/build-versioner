@@ -5,21 +5,21 @@ namespace BuildVersioner
 
     public sealed class BVInfo
     {
-        public static string VersionMajor => Instance.VersionMajor;
-        public static string VersionMinor => Instance.VersionMinor;
-        public static string Changelist => Instance.GetChangelist();
+        public static string VersionMajor => Instance.Enabled ? Instance.VersionMajor : "";
+        public static string VersionMinor => Instance.Enabled ? Instance.VersionMinor : "";
+        public static string Changelist => Instance.Enabled ? Instance.GetChangelist() : "";
 
         public static string GetVersionFormatted()
         {
-            string major = Instance.VersionMajor;
+            string major = VersionMajor;
             if (string.IsNullOrEmpty(major))
                 major = "#";
 
-            string minor = Instance.VersionMinor;
+            string minor = VersionMinor;
             if (string.IsNullOrEmpty(minor))
                 minor = "#";
 
-            string changelist = Instance.GetChangelist();
+            string changelist = Changelist;
             if (string.IsNullOrEmpty(changelist))
                 changelist = "######";
 

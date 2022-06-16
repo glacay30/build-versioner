@@ -20,9 +20,16 @@ namespace BuildVersioner
                 var infoAssets = Resources.LoadAll<BVInfoScriptableObject>(nameof(BVInfoScriptableObject));
                 if (infoAssets.Length == 1)
                 {
-                    infoAssets[0].Value = BVInfo.GetVersionFormatted(); // store data into asset
+                    // store data into asset and force save
+                    infoAssets[0].Enabled = BVSingleton.Instance.Enabled;
+                    if (infoAssets[0].Enabled)
+                    {
+                        infoAssets[0].VersionMajor = BVInfo.VersionMajor;
+                        infoAssets[0].VersionMinor = BVInfo.VersionMinor;
+                        infoAssets[0].Changelist = BVInfo.Changelist;
+                    }
                     EditorUtility.SetDirty(infoAssets[0]);
-                    AssetDatabase.SaveAssets(); // force save again
+                    AssetDatabase.SaveAssets();
                 }
                 else
                 {

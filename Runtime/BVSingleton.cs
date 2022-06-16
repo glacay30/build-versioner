@@ -15,11 +15,14 @@ namespace BuildVersioner
             }
         }
 
+        public bool Enabled { get; set; } = true;
+
         public string VersionMajor { get; set; }
+
         public string VersionMinor { get; set; }
 
 #if UNITY_STANDALONE
-        private string _changelistNumber;
+        private string _changelist;
 #endif
 
 #if UNITY_EDITOR
@@ -29,18 +32,24 @@ namespace BuildVersioner
         private BVSingleton()
         {
 #if UNITY_EDITOR
-            VersionMajor = BVSystemCommands.Editor_ReadPropertyFromFile(nameof(VersionMajor));
-            VersionMinor = BVSystemCommands.Editor_ReadPropertyFromFile(nameof(VersionMinor));
-            P4Workspace = BVSystemCommands.Editor_ReadPropertyFromFile(nameof(P4Workspace));
+            Enabled = bool.Parse(BVSystemCommands.Editor_ReadPropertyFromFile(nameof(Enabled)));
+            if (Enabled)
+            {
+                VersionMajor = BVSystemCommands.Editor_ReadPropertyFromFile(nameof(VersionMajor));
+                VersionMinor = BVSystemCommands.Editor_ReadPropertyFromFile(nameof(VersionMinor));
+                P4Workspace = BVSystemCommands.Editor_ReadPropertyFromFile(nameof(P4Workspace));
+            }
 #elif UNITY_STANDALONE
             var infoAssets = Resources.LoadAll<BVInfoScriptableObject>(nameof(BVInfoScriptableObject));
             if (infoAssets.Length == 1)
             {
-                string fullVersion = infoAssets[0].Value;
-                string[] splitVersion = fullVersion.Split('.');
-                VersionMajor = splitVersion[0];
-                VersionMinor = splitVersion[1];
-                _changelistNumber = splitVersion[2];
+                Enabled = infoAssets[0].Enabled;
+                if (Enabled)
+                {
+                    VersionMajor = infoAssets[0].VersionMajor;
+                    VersionMinor = infoAssets[0].VersionMinor;
+                    _changelist = infoAssets[0].Changelist;
+                }
             }
 #endif
         }
@@ -51,7 +60,7 @@ namespace BuildVersioner
 #if UNITY_EDITOR
             return BVSystemCommands.Editor_GetChangelistNumberFromCommand();
 #elif UNITY_STANDALONE
-            return Instance._changelistNumber;
+            return Instance._changelist;
 #endif
         }
     }

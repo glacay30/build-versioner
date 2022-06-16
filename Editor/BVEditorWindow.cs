@@ -14,7 +14,7 @@ namespace BuildVersioner
 
         public override void SaveChanges()
         {
-            BVSystemCommands.Editor_SaveToFile();
+            BVSystemCommands.Editor_SavePropertiesToFile();
             base.SaveChanges();
         }
 
@@ -36,12 +36,22 @@ namespace BuildVersioner
             float BUTTON_WIDTH = 175.0f;
             float SECTION_VERTICAL_SPACING = 10.0f;
 
+            GUILayout.BeginHorizontal();
+            BVSingleton.Instance.Enabled = GUILayout.Toggle(BVSingleton.Instance.Enabled, "Enabled");
+            GUILayout.EndHorizontal();
+
+            if (!BVSingleton.Instance.Enabled)
+            {
+                SaveChanges();
+                return;
+            }
+
             GUILayout.Label("Version Settings", EditorStyles.boldLabel);
             {
                 BVSingleton.Instance.VersionMajor = EditorGUILayout.TextField("Version Major", BVSingleton.Instance.VersionMajor);
                 BVSingleton.Instance.VersionMinor = EditorGUILayout.TextField("Version Minor", BVSingleton.Instance.VersionMinor);
                 BVSingleton.Instance.P4Workspace = EditorGUILayout.TextField("Workspace", BVSingleton.Instance.P4Workspace);
-                
+
                 {
                     GUILayout.BeginHorizontal();
                     if (GUILayout.Button("Get Changelist Number", GUILayout.Width(BUTTON_WIDTH)))
