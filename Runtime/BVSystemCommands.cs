@@ -140,7 +140,7 @@ namespace BuildVersioner
                 var foundProperty = File.ReadAllText(Editor_GetFilePath()).Split('\r', '\n').FirstOrDefault(str =>
                 {
                     if (string.IsNullOrEmpty(str))
-                        return false;
+                        return default;
 
                     string[] propAndValue = str.Split(new char[] { ':' }, 2);
                     return propAndValue[0].Equals(propertyName);

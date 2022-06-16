@@ -38,7 +38,15 @@ namespace BuildVersioner
         private BVSingleton()
         {
 #if UNITY_EDITOR
-            Enabled = bool.Parse(BVSystemCommands.Editor_ReadPropertyFromFile(nameof(Enabled)));
+            string enabledString = BVSystemCommands.Editor_ReadPropertyFromFile(nameof(Enabled));
+            if (string.IsNullOrEmpty(enabledString))
+            {
+                Enabled = true; // no file, so first time ever using BV
+            }
+            else
+            {
+                Enabled = bool.Parse(enabledString); // use existing settings
+            }
             if (Enabled)
             {
                 VersionMajor = BVSystemCommands.Editor_ReadPropertyFromFile(nameof(VersionMajor));
